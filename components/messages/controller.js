@@ -1,6 +1,10 @@
-import { add, getAll } from "./store.js";
+import { MessageStore } from "./store.js";
 
 class MessageController {
+
+    constructor() {
+        this.store = new MessageStore();
+    }
 
     addMessage(user, message) {
         return new Promise((resolve, reject) => {
@@ -17,14 +21,46 @@ class MessageController {
                 success: true
             }
 
-            add(response);
+            this.store.addMessage(response);
             resolve(response)
         })
     }
 
-    getMessages() {
+    getMessageById(id) {
         return new Promise((resolve, reject) => {
-            resolve(getAll())
+            resolve(this.store.getMessageById())
+        })
+    }
+
+    getMessages(userFilter) {
+        return new Promise((resolve, reject) => {
+            resolve(this.store.getMessages(userFilter))
+        })
+    }
+
+    updateMessage(id, message) {
+        return new Promise(async (resolve, reject) => {
+
+            if (!id || !message) {
+                reject("Invalid data")
+            }
+            const result = await this.store.updateText(id, message);
+            resolve(result)
+        })
+    }
+
+    deleteMessage(id) {
+        return new Promise(async (resolve, reject) => {
+
+            if (!id) {
+                reject("Invalid data")
+            }
+            const result = await this.store.deleteMessage(id)
+                .then(() => {
+                    resolve()
+                }).catch((err) => {
+                    reject(err)
+                });
         })
     }
 }

@@ -11,8 +11,20 @@ class MessageRouter {
     }
 
     setupRoutes() {
+
         this.router.get('/', (req, res) => {
-            this.controller.getMessages()
+            const userFilter = req.query.user || null;
+
+            this.controller.getMessages(userFilter)
+                .then((result) => {
+                    this.response.success(req, res, result, 200);
+                }).catch((err) => {
+                    this.response.error(req, res, 'Unexpected error', 500, e);
+                });;
+        });
+
+        this.router.get('/:id', (req, res) => {
+            this.controller.getMessageById(req.params.id)
                 .then((result) => {
                     this.response.success(req, res, result, 200);
                 }).catch((err) => {
@@ -29,6 +41,24 @@ class MessageRouter {
                 });
 
         });
+
+        this.router.patch('/:id', (req, res) => {
+            this.controller.updateMessage(req.params.id, req.body.message)
+                .then((result) => {
+                    this.response.success(req, res, result, 200);
+                }).catch((err) => {
+                    this.response.error(req, res, err, 500);
+                });
+        })
+
+        this.router.delete('/:id', (req, res) => {
+            this.controller.deleteMessage(req.params.id)
+                .then((result) => {
+                    this.response.success(req, res, `Message with id: ${req.params.id} was deleted`, 200);
+                }).catch((err) => {
+                    this.response.error(req, res, err, 500);
+                });
+        })
     }
 }
 
