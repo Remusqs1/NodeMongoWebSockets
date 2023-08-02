@@ -17,8 +17,7 @@ class MessageController {
                 success: true
             }
 
-            add(response.message)
-
+            add(response);
             resolve(response)
         })
     }
