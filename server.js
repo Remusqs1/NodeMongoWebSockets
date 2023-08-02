@@ -1,5 +1,10 @@
 import express from 'express';
 import routes from './network/routes.js';
+import { config } from './config/config.js';
+import DBContext from './db/db.js';
+
+const db = new DBContext();
+db.connect(config.dbUrl)
 
 var app = express()
 app.use(express.json());
