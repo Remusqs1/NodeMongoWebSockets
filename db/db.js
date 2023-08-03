@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { config } from '../config/config.js';
 
 class DBContext {
 
@@ -8,7 +9,8 @@ class DBContext {
     }
 
     async connect(url) {
-        this.mongoose.connect(url, {
+        const dbUrl = url || config.dbUrl
+        this.mongoose.connect(dbUrl, {
             useNewUrlParser: true
         });
     }

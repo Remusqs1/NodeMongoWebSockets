@@ -190,4 +190,7 @@ $RECYCLE.BIN/
 postgres-data
 mysql-data
 
+#others
+public/files
+
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,node,windows

@@ -3,13 +3,21 @@ import mongoose from 'mongoose';
 const MongooseSchema = mongoose.Schema;
 
 const mySchema = new MongooseSchema({
-    user: String,
+    user: {
+        type: MongooseSchema.ObjectId,
+        ref: 'Chat'
+    },
+    chat: {
+        type: MongooseSchema.ObjectId,
+        ref: 'User'
+    },
     message: {
         type: String,
         required: true
     },
     date: Date,
-    success: Boolean
+    success: Boolean,
+    file: String
 });
 
 const myModel = mongoose.model('Message', mySchema);

@@ -6,29 +6,41 @@ class MessageController {
         this.store = new MessageStore();
     }
 
-    addMessage(user, message) {
+    addMessage(data) {
+
+        const { user, message, chat, file } = data
         return new Promise((resolve, reject) => {
 
-            if (!user || !message) {
-                console.error('[MessageController] there is no user or message to send');
+            if (!user || !message || !chat) {
+                console.error('[MessageController] there is invalida data');
                 return reject("Invalida data")
             }
 
-            const response = {
+            console.log(file);
+            let fileUrl = file ? 'localhost:3000/app/files/' + file.filename : ''
+            console.log(fileUrl);
+
+            const sentData = {
                 user: user,
                 message: message,
+                chat: chat,
                 date: new Date(),
-                success: true
+                success: true,
+                file: fileUrl
+            }
+            try {
+                this.store.addMessage(sentData);
+                resolve(sentData)
+            } catch (error) {
+                reject(error)
             }
 
-            this.store.addMessage(response);
-            resolve(response)
         })
     }
 
     getMessageById(id) {
         return new Promise((resolve, reject) => {
-            resolve(this.store.getMessageById())
+            resolve(this.store.getMessageById(id))
         })
     }
 
@@ -56,6 +68,17 @@ class MessageController {
                 reject("Invalid data")
             }
             const result = await this.store.deleteMessage(id)
+                .then(() => {
+                    resolve()
+                }).catch((err) => {
+                    reject(err)
+                });
+        })
+    }
+
+    deleteAll() {
+        return new Promise(async (resolve, reject) => {
+            const result = await this.store.deleteAll()
                 .then(() => {
                     resolve()
                 }).catch((err) => {

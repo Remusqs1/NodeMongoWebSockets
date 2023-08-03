@@ -4,7 +4,7 @@ import { config } from './config/config.js';
 import DBContext from './db/db.js';
 
 const db = new DBContext();
-db.connect(config.dbUrl)
+db.connect()
 
 var app = express()
 app.use(express.json());

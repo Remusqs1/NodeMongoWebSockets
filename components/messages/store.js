@@ -1,30 +1,37 @@
-import mongoose from 'mongoose';
 import Model from '../../components/messages/model.js';
-import { config } from '../../config/config.js';
 
 class MessageStore {
 
-    constructor() {
-        this.mongoose = mongoose;
-        this.mongoose.Promise = global.Promise;
-        this.mongoose.connect(config.dbUrl, {
-            useNewUrlParser: true
+    // TODO catch error
+    async addMessage(message) {
+        return new Promise(async (resolve, reject) => {
+            const myMessage = new Model(message);
+            try {
+                const resMongo = await myMessage.save();
+                resolve(resMongo);
+            } catch (error) {
+                reject(error)
+            }
         });
     }
 
-    async addMessage(message) {
-        const myMessage = new Model(message);
-        const resMongo = await myMessage.save();
-    }
-
     async getMessages(userFilter) {
-        let filter = {}
-        if (userFilter !== null) {
-            filter = { user: userFilter };
-        }
+        return new Promise((resolve, reject) => {
+            let filter = {}
+            if (userFilter !== null) {
+                filter = { user: userFilter };
+            }
 
-        const messages = Model.find(filter);
-        return messages;
+            try {
+                const data = Model.find(filter)
+                    .populate('user')
+                    .exec();
+                resolve(data)
+            } catch (error) {
+                reject(error)
+            }
+
+        })
     }
 
     async getMessageById(id) {
@@ -44,11 +51,16 @@ class MessageStore {
     }
 
     async deleteMessage(id) {
-        const updatedMessage = await Model.deleteOne(
+        const deleted = await Model.deleteOne(
             { _id: id }
         );
 
-        return updatedMessage;
+        return deleted;
+    }
+
+    async deleteAll() {
+        const deleted = await Model.deleteMany({});
+        return deleted;
     }
 
 }
