@@ -1,0 +1,19 @@
+<html>
+
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <h1>Watch the console</h1>
+    <script>
+        const socket = io("ws://localhost:3000");
+
+        // handle the event sent with socket.send()
+        socket.on("message", (data) => {
+            console.log(data);
+        });
+    </script>
+</body>
+
+</html>

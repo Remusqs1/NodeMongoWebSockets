@@ -1,15 +1,23 @@
 import express from 'express';
 import routes from './network/routes.js';
-import { config } from './config/config.js';
 import DBContext from './db/db.js';
+import http from "http";
+import { socket } from "./socket.js";
+
+var app = express()
+const server = http.createServer(app)
+// const socket = new SocketClass();
 
 const db = new DBContext();
 db.connect()
 
-var app = express()
 app.use(express.json());
+
+socket.connect(server);
 routes(app);
 
 app.use('/app', express.static('public'))
-app.listen(3000)
-console.log("App listening at http://localhost:3000")
+
+server.listen(3000, () => {
+    console.log("App listening at http://localhost:3000")
+})

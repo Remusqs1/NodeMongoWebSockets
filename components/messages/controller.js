@@ -1,13 +1,14 @@
 import { MessageStore } from "./store.js";
+import { socket } from './../../socket.js'
 
 class MessageController {
 
     constructor() {
         this.store = new MessageStore();
+        this.mySocket = socket.socket;
     }
 
     addMessage(data) {
-
         const { user, message, chat, file } = data
         return new Promise((resolve, reject) => {
 
@@ -15,10 +16,7 @@ class MessageController {
                 console.error('[MessageController] there is invalida data');
                 return reject("Invalida data")
             }
-
-            console.log(file);
             let fileUrl = file ? 'localhost:3000/app/files/' + file.filename : ''
-            console.log(fileUrl);
 
             const sentData = {
                 user: user,
@@ -30,6 +28,8 @@ class MessageController {
             }
             try {
                 this.store.addMessage(sentData);
+                // TODO mySocket Not Working
+                this.mySocket.io.emit('Message', sentData)
                 resolve(sentData)
             } catch (error) {
                 reject(error)
